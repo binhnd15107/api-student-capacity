@@ -403,7 +403,6 @@ class RoundController extends Controller
     public function attachEnterprise(Request $request, Donor $donor, DonorRound $donorRound, $id)
     {
         try {
-            // dd(Round::find($id)->load('Enterprise')->Enterprise->id);
             foreach ($request->enterprise_id as $item) {
                 $data = $donor::where('contest_id', $this->round::find($id)->load('enterprise_contest:id')->enterprise_contest->id)
                     ->where('enterprise_id', $item)
@@ -413,16 +412,16 @@ class RoundController extends Controller
                         'round_id' => $id,
                         'donor_id' => $data->id,
                     ]);
-                    return redirect()->back();
+                }else{
+                    $data = Donor::create([
+                        'contest_id' => Round::find($id)->load('enterprise_contest:id')->enterprise_contest->id,
+                        'enterprise_id' => $item,
+                    ]);
+                    $donorRound::create([
+                        'round_id' => $id,
+                        'donor_id' => $data->id,
+                    ]);
                 }
-                $data = Donor::create([
-                    'contest_id' => Round::find($id)->load('enterprise_contest:id')->enterprise_contest->id,
-                    'enterprise_id' => $item,
-                ]);
-                $donorRound::create([
-                    'round_id' => $id,
-                    'donor_id' => $data->id,
-                ]);
             }
             return redirect()->back();
         } catch (\Throwable $th) {
@@ -432,6 +431,7 @@ class RoundController extends Controller
 
     public function detachEnterprise($id, $donor_id)
     {
+
         try {
             $data = DonorRound::where('round_id', $id)->where('donor_id', $donor_id)->first();
             if ($data) $data->delete();

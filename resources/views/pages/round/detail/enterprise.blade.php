@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('title', 'Chi tiết cuộc thi')
-@section('page-title', 'Danh sách đội thi ')
+@section('page-title', 'Danh sách doanh nghiệp ')
 @section('content')
     <div class=" card card-flush p-5">
         <div class=" mb-4">
