@@ -431,6 +431,7 @@ class RoundController extends Controller
 
     public function detachEnterprise($id, $donor_id)
     {
+
         try {
             $data = DonorRound::where('round_id', $id)->where('donor_id', $donor_id)->first();
             if ($data) $data->delete();
