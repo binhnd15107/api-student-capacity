@@ -260,25 +260,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            $total = $dataTeam->total();
-                        @endphp
-                        @forelse ($dataTeam as $index=> $key)
+                        @foreach ($dataTeam as $index => $key)
                             <tr>
-                                {{-- @if (request()->has('sortBy'))
-                                    <th scope="row">
-                                        @if (request('sortBy') == 'desc')
-                                            {{ (request()->has('page') && request('page') !== 1 ? $dataTeam->perPage() * (request('page') - 1) : 0) + $index + 1 }}
-                                        @else
-                                            {{ request()->has('page') && request('page') !== 1 ? $total - $dataTeam->perPage() * (request('page') - 1) - $index : ($total -= 1) }}
-                                        @endif
-                                    </th>
-                                @else
-                                    <th scope="row">
-                                        {{ (request()->has('page') && request('page') !== 1 ? $dataTeam->perPage() * (request('page') - 1) : 0) + $index + 1 }}
-                                    </th>
-                                @endif --}}
-                                {{-- </th> --}}
                                 <td>
                                     <button class="p-3" style="border:none;background:none; text-align: left;"
                                         type="button" data-bs-toggle="modal"
@@ -307,7 +290,7 @@
                                                             </h4>
                                                             <h5>Tham gia cuộc thi :
                                                                 <a
-                                                                    href="{{ route('admin.contest.show', $key->contest->id) }}">
+                                                                    href="{{ route('admin.contest.show', $key->contest->id ) }}">
                                                                     {{ $key->contest->name ?? 'Chưa có Cuộc thi ' }}</a>
                                                             </h5>
                                                         </div>
@@ -511,8 +494,8 @@
                                     </div>
                                 </td>
                             </tr>
-                        @empty
-                        @endforelse
+
+                        @endforeach
                     </tbody>
                 </table>
                 {{ $dataTeam->appends(request()->all())->links('pagination::bootstrap-4') }}

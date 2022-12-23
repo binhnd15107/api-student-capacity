@@ -163,7 +163,6 @@ class Contest extends Model
         return $this->morphMany(Wishlist::class, 'wishlistable');
     }
 
-
     public function user_top()
     {
         return $this->hasOneDeep(
@@ -183,4 +182,5 @@ class Contest extends Model
             ->selectRaw('sum(result_capacity.scores) as total_scores, result_capacity.user_id')
             ->orderByDesc('total_scores');
     }
+
 }

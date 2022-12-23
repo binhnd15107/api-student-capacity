@@ -124,7 +124,6 @@ class Round implements MRoundInterface
         return $this->round::whereIn($key, $val);
     }
 
-
     public function results($id)
     {
         if (request()->has('q')) {

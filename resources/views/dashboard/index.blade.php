@@ -197,26 +197,92 @@
                         <div class="card-title flex-column">
                             <h3 class="fw-bolder mb-1">Xếp hạng cuộc thi  </h3>
                         </div>
-                        <!--end::Card title-->
-                        <!--begin::Card toolbar-->
-                        {{-- <div class="card-toolbar">
-                            <!--begin::Select-->
-                            <select name="status" data-control="select2" data-hide-search="true"
-                                class="form-select form-select-solid form-select-sm fw-bolder w-100px">
-                                <option value="1" selected="selected">Options</option>
-                                <option value="2">Option 1</option>
-                                <option value="3">Option 2</option>
-                                <option value="4">Option 3</option>
-                            </select>
-                            <!--end::Select-->
-                        </div> --}}
-                        <!--end::Card toolbar-->
+                        <div  style="width:65%;margin-top:7px" class="form-group p-2">
+                                <select id="selectContest" class="form-select mb-2 select2-hidden-accessible" data-control="select2"
+                                    data-hide-search="false" tabindex="-1" aria-hidden="true" name="" value="">
+                                    @if(count($dataContest)>0)
+                                        @foreach($dataContest as $item )
+                                            <option  @selected(request('contest_id') == $item->id)
+                                                    value="{{$item->id}}">{{ $item->name }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                        </div>
                     </div>
-                    <!--end::Card header-->
-                    <!--begin::Card body-->
-                    <div style=" max-height: 500px;  overflow: auto;" class="card-body p-9 pt-4">
-                        <!--begin::Dates-->
-                        <!--end::Tab Content-->
+
+                    <div
+                        style=" max-height: 500px;  overflow: auto;margin:0"
+                        class="card-body p-9 pt-4">
+                       <div  id="rank-contest">
+                            @if(count($listRankContest) >0 )
+                                @foreach ($listRankContest as  $item)
+                                    <h5 style="text-align: center;">{{ $item->name }}</h5>
+                                    <table class="table table-row-dashed table-row-gray-300 gy-7">
+                                        <thead>
+                                            <tr class="fw-bolder fs-6 text-gray-800">
+                                                <th>Hạng</th>
+                                                <th>Đội thi</th>
+                                                <th>Tổng điểm</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(count($item->results) > 0)
+                                                @foreach ($item->results as $index => $result)
+                                                    <tr>
+                                                        <td
+                                                            style="color: #0e0759;
+                                                            font-size: 16px;
+                                                            line-height: 22.4px;
+                                                            font-weight: 400;
+                                                            vertical-align: middle;
+                                                            height: 60px;
+                                                            padding: 10px;"
+                                                        >{{ ++$index }}
+                                                        </td>
+                                                        <td>
+                                                            <img
+                                                                style="border-radius: 100px;
+                                                                object-fit: cover;
+                                                                display: inline-block;
+                                                                height: 50px;
+                                                                width: 50px;
+                                                                "
+                                                                src="{{ $result->team->image ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRI7M4Z0v1HP2Z9tZmfQaZFCuspezuoxter_A&usqp=CAU' }}"
+                                                            >
+                                                        <span
+                                                                style="display: inline-block;
+                                                                color: #0e0759;
+                                                                margin: 0 0 0 10px;
+                                                                font-size: 14px;
+                                                                line-height: 22.4px;
+                                                                font-weight: 400;"
+                                                        >
+                                                                {{$result->team->name ?? 'Không tồn tại'}}
+                                                            </span>
+                                                        </td>
+                                                        <td
+                                                            style="color: var(--my-primary);
+                                                            font-size: 15px;
+                                                            line-height: 22.4px;
+                                                            font-weight: 400;
+                                                            vertical-align: middle;
+                                                            text-align: center;
+                                                            height: 60px;
+                                                            padding: 10px;"
+                                                        >
+                                                            {{$result->point}}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                            <h5>Không có bảng xếp hạng</h5>
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                @endforeach
+                            @endif
+                       </div>
                     </div>
                     <!--end::Card body-->
                 </div>
@@ -235,26 +301,69 @@
                         <div class="card-title flex-column">
                             <h3 class="fw-bolder mb-1">Xếp hạng test năng lực  </h3>
                         </div>
-                        <!--end::Card title-->
-                        <!--begin::Card toolbar-->
-                        {{-- <div class="card-toolbar">
-                            <!--begin::Select-->
-                            <select name="status" data-control="select2" data-hide-search="true"
-                                class="form-select form-select-solid form-select-sm fw-bolder w-100px">
-                                <option value="1" selected="selected">Options</option>
-                                <option value="2">Option 1</option>
-                                <option value="3">Option 2</option>
-                                <option value="4">Option 3</option>
-                            </select>
-                            <!--end::Select-->
-                        </div> --}}
-                        <!--end::Card toolbar-->
                     </div>
-                    <!--end::Card header-->
-                    <!--begin::Card body-->
+
                     <div style=" max-height: 500px;  overflow: auto;" class="card-body p-9 pt-4">
-                        <!--begin::Dates-->
-                        <!--end::Tab Content-->
+                        <table class="table table-row-dashed table-row-gray-300 gy-7">
+                            <thead>
+                                <tr class="fw-bolder fs-6 text-gray-800">
+                                    <th>Hạng</th>
+                                    <th>Sinh viên</th>
+                                    <th>Tổng điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(count($listRankCapacity) > 0)
+                                    @foreach ($listRankCapacity as $index => $item)
+                                        <tr>
+                                            <td
+                                                style="color: #0e0759;
+                                                font-size: 16px;
+                                                line-height: 22.4px;
+                                                font-weight: 400;
+                                                vertical-align: middle;
+                                                height: 60px;
+                                                padding: 10px;"
+                                            >{{ ++$index }}
+                                            </td>
+                                            <td>
+                                                <img
+                                                    style="border-radius: 100px;
+                                                    object-fit: cover;
+                                                    display: inline-block;
+                                                    height: 50px;
+                                                    width: 50px;
+                                                    "
+                                                    src="{{$item->user->avatar}}"
+                                                >
+                                               <span
+                                                    style="display: inline-block;
+                                                    color: #0e0759;
+                                                    margin: 0 0 0 10px;
+                                                    font-size: 14px;
+                                                    line-height: 22.4px;
+                                                    font-weight: 400;"
+                                               >
+                                                    {{$item->user->name}}
+                                                </span>
+                                            </td>
+                                            <td
+                                                style="color: var(--my-primary);
+                                                font-size: 15px;
+                                                line-height: 22.4px;
+                                                font-weight: 400;
+                                                vertical-align: middle;
+                                                text-align: center;
+                                                height: 60px;
+                                                padding: 10px;"
+                                            >
+                                                {{$item->total_scores}}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
                     <!--end::Card body-->
                 </div>
@@ -457,6 +566,96 @@
 
             fetchConTestCapacity($(this).data('date'))
         })
+        function fetchRankContest(contestID) {
+
+            $('#rank-contest').html(`Đang chạy ...`);
+            $.ajax({
+                type: "GET",
+                url: "admin/dashboard/rank-contest?contest_id=" + contestID,
+                success: function(response) {
+                    console.log(response.data);
+                    return
+                    var html = response.data.map(function(data) {
+                        return `
+                                <div>
+                                    <h5 style="text-align: center;">${data.name}</h5>
+                                    <table class="table table-row-dashed table-row-gray-300 gy-7">
+                                        <thead>
+                                            <tr class="fw-bolder fs-6 text-gray-800">
+                                                <th>Hạng</th>
+                                                <th>Đội thi</th>
+                                                <th>Tổng điểm</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                ${handleRankContest(data.results)}
+                                        </tbody>
+                                    </table>
+                                </div>
+                        `;
+                    }).join(" ");
+                    $('#rank-contest').html(html);
+                }
+            });
+        }
+
+        function handleRankContest(data){
+            if(data.length >0 ){
+                return `<h5>Không có bảng xếp hạng</h5>`
+            }else{
+                data.map(function(data,index){
+                    return `  <tr>
+                                    <td
+                                        style="color: #0e0759;
+                                        font-size: 16px;
+                                        line-height: 22.4px;
+                                        font-weight: 400;
+                                        vertical-align: middle;
+                                        height: 60px;
+                                        padding: 10px;"
+                                    >${++index}
+                                    </td>
+                                    <td>
+                                        <img
+                                            style="border-radius: 100px;
+                                            object-fit: cover;
+                                            display: inline-block;
+                                            height: 50px;
+                                            width: 50px;
+                                            "
+                                            src="{{ $result->team->image ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRI7M4Z0v1HP2Z9tZmfQaZFCuspezuoxter_A&usqp=CAU' }}"
+                                        >
+                                    <span
+                                            style="display: inline-block;
+                                            color: #0e0759;
+                                            margin: 0 0 0 10px;
+                                            font-size: 14px;
+                                            line-height: 22.4px;
+                                            font-weight: 400;"
+                                    >
+                                            {{$result->team->name ?? 'Không tồn tại'}}
+                                        </span>
+                                    </td>
+                                    <td
+                                        style="color: var(--my-primary);
+                                        font-size: 15px;
+                                        line-height: 22.4px;
+                                        font-weight: 400;
+                                        vertical-align: middle;
+                                        text-align: center;
+                                        height: 60px;
+                                        padding: 10px;"
+                                    >
+                                        {{$result->point}}
+                                    </td>
+                            </tr>`
+                });
+            }
+        }
+        $('#selectContest').change(function() {
+                let idContest = $(this).val();
+                fetchRankContest(idContest);
+            })
     </script>
 
 @endsection

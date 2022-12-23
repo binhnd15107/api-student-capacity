@@ -65,10 +65,15 @@ class TeamController extends Controller
     public function ListTeam(Request $request)
     {
         try {
-            $Contest = $this->contest::orderBy('id', 'DESC')->get();
-            $dataTeam = $this->getList($request)->paginate(config('util.HOMEPAGE_ITEM_AMOUNT'));
-
-            return view('pages.team.listTeam', compact('dataTeam', 'Contest'));
+            $Contest = $this->contest::
+            where('type', config('util.TYPE_CONTEST'))
+            ->orderBy('id', 'DESC')
+            ->get(['id','name']);
+            $limit = $request->get('limit',config('util.HOMEPAGE_ITEM_AMOUNT'));
+            $dataTeam = $this->getList($request)
+                        ->with(['contest:id,name'])
+                        ->paginate($limit);
+                        return view('pages.team.listTeam', compact('dataTeam', 'Contest'));
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'lỗi'

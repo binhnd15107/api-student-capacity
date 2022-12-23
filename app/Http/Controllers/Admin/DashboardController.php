@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contest;
-use App\Models\Team;
-use App\Models\User;
+use App\Models\Result;
+use App\Models\ResultCapacity;
+use App\Models\Round;
 use App\Services\Modules\MContest\MContestInterface;
 use App\Services\Modules\MTeam\MTeamInterface;
 use App\Services\Modules\MUser\MUserInterface;
@@ -30,6 +31,10 @@ class DashboardController extends Controller
 
         $totalTeamActive = $this->team->getTotalTeamActive();
 
+        $listRankCapacity = $this->getRankCapacity($request);
+
+        $listRankContest = $this->getRankContest($request);
+
         $totalStudentAccount = $this->user->getTotalStudentAcount();
 
         $dt = $this->carbon::now('Asia/Ho_Chi_Minh');
@@ -39,15 +44,21 @@ class DashboardController extends Controller
         $contests = $this->contest->getContestMapSubDays($dt->subDays(2)->toDateTimeString());
         $contestsDealineNow = $this->contest->getContestByDateNow($this->carbon::now('Asia/Ho_Chi_Minh'));
         $period = $this->carbonPeriod::create($dt3->subDays(2)->toDateTimeString(), $dt2->addDays(7)->toDateTimeString());
-
+        $dataContest = Contest::with(['rounds:id,name,contest_id'])
+                        ->where('type', config('util.TYPE_CONTEST'))
+                        ->orderByDesc('created_at')
+                        ->get(['id','name']);
         return view('dashboard.index', compact(
+            'listRankCapacity',
+            'listRankContest',
             'totalContestGoingOn',
             'totalTeamActive',
             'totalStudentAccount',
             'contests',
             'period',
             'timeNow',
-            'contestsDealineNow'
+            'contestsDealineNow',
+            'dataContest'
         ));
     }
 
@@ -65,4 +76,45 @@ class DashboardController extends Controller
             'data' => $lstContest
         ]);
     }
+
+    public function getRankCapacity($params){
+        $limit = $params->get('limit',10);
+        return ResultCapacity::with(['user:id,name,avatar,email'])
+                ->selectRaw('sum(scores) as total_scores,id,user_id')
+                ->groupBy('user_id')
+                ->orderByDesc('total_scores')
+                ->paginate($limit);
+    }
+
+    public function getRankContest(Request $request){
+
+        $contestID = $request->get('contest_id',
+            Contest::where('type', config('util.TYPE_CONTEST'))
+            ->where('register_deadline','>',now())
+            ->orderByDesc('register_deadline')
+            ->first()
+            ->id
+        );
+       $results = Round::with(['results'=>function($query){
+            $query->with('team:id,name,image')
+            ->orderByDesc('point')
+            ->orderByDesc('updated_at');
+        }])
+            ->where('contest_id',$contestID)
+            ->orderByDesc('created_at')
+            ->get(['id','name'])
+            ->map(function ($item) {
+              $result = $item->results->take(10);
+              unset($item->results);
+              $item['results'] =  $result ;
+                return $item;
+            });
+        if($request->has('contest_id')){
+            return response()->json([
+                'status' => true,
+                'data' => $results
+            ]);
+        }
+        return  $results ? $results : false;
+     }
 }

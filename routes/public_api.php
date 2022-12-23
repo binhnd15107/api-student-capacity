@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CandidateController;
 use App\Http\Controllers\Admin\CodeManagerController;
 use App\Http\Controllers\Admin\CompanyController as AdminCompanyController;
 use App\Http\Controllers\Admin\ContestController as AdminContestController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EnterpriseController;
 use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\KeywordController;
@@ -121,3 +122,6 @@ Route::prefix('challenge')->group(function () {
 Route::prefix('code-language')->group(function () {
     Route::get('', [CodeManagerController::class, 'getCodeLanguageAll']);
 });
+
+Route::get('rank-contest',[DashboardController::class,'getRankContest']);
+
