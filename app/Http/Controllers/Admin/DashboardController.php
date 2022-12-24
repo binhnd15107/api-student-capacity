@@ -90,7 +90,7 @@ class DashboardController extends Controller
 
         $contestID = $request->get('contest_id',
             Contest::where('type', config('util.TYPE_CONTEST'))
-            ->where('register_deadline','>',now())
+            ->where('register_deadline','<',now())
             ->orderByDesc('register_deadline')
             ->first()
             ->id
@@ -115,6 +115,7 @@ class DashboardController extends Controller
                 'data' => $results
             ]);
         }
+        $request['old_contest'] = $contestID ;
         return  $results ? $results : false;
      }
 }
